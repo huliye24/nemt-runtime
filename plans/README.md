@@ -28,6 +28,7 @@
 
 | 序号 | 计划 | 核心产出 | 前置依赖 | 文件 |
 |---|---|---|---|---|
+| **0** | **API 中台建设** | Electron ↔ FastAPI ↔ Python 量化引擎 三层架构 | 无（最高优先级） | [07-API_MIDDLE_PLATFORM.md](./07-API_MIDDLE_PLATFORM.md) |
 | 1 | Strategy Runtime | 策略从 UI 数据项升级为运行时对象 | 容器分层已完成 | [01-STRATEGY_RUNTIME.md](./01-STRATEGY_RUNTIME.md) |
 | 2 | Runtime Registry | 统一运行时登记、查询、关系索引 | 计划一 | [02-RUNTIME_REGISTRY.md](./02-RUNTIME_REGISTRY.md) |
 | 3 | Electron Runtime Bridge | 让 Electron main / preload / IPC / runtime bridge 成为正式软件边界 | 计划一、二 | [../ELECTRON_RUNTIME_EXPANSION_PLAN.md](../ELECTRON_RUNTIME_EXPANSION_PLAN.md) |
@@ -35,6 +36,8 @@
 | 5 | Portfolio Runtime | 资金管理正式化为可运行的运行时对象 | 计划一至四 | [03-PORTFOLIO_RUNTIME.md](./03-PORTFOLIO_RUNTIME.md) |
 | 6 | Risk Governance | 风险从参数升级为独立的治理闭环 | 计划一至五 | [04-RISK_GOVERNANCE.md](./04-RISK_GOVERNANCE.md) |
 | 7 | Agent Runtime | AI Agent 作为一等公民进入运行时世界 | 计划一至六 | [05-AGENT_RUNTIME.md](./05-AGENT_RUNTIME.md) |
+
+> **计划 0 (API 中台)** 优先级最高 — 30,000 行 Python 量化引擎无 API 层，前端全是 Mock 数据。这个计划打通整个垂直链路，是其他所有计划的基础设施。
 
 ## 每一步对系统能力的提升
 
@@ -62,6 +65,7 @@
 
 | 步骤 | 状态 | 开始日期 | 完成日期 |
 |---|---|---|---|
+| 0 — API 中台 | ⬜ 待开始 | — | — |
 | 1 — Strategy Runtime | 🟡 已部分落地 | 2026-05-05 | — |
 | 2 — Runtime Registry | 🟡 已部分落地 | 2026-05-05 | — |
 | 3 — Electron Runtime Bridge | 🟡 已开始落地 | 2026-05-05 | — |
