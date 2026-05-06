@@ -1,0 +1,100 @@
+---
+description: TypeScript 类型安全规范
+alwaysApply: true
+---
+
+# TypeScript 类型安全规范
+
+本项目使用 TypeScript strict mode，所有代码必须遵循以下类型安全规范。
+
+## 核心规则
+
+### 1.1 禁止使用 any
+
+```typescript
+// 禁止
+const handleChange = (value: any) => { ... }
+const data: any = fetchData();
+
+// 正确
+const handleChange = (value: string) => { ... }
+const data: ApiResponse<Strategy> = fetchData();
+```
+
+### 1.2 必须类型化的情况
+
+| 场景 | 要求 |
+|------|------|
+| 函数参数 | 必须有类型注解 |
+| 函数返回值 | 必须有类型注解 |
+| 组件 props | 必须定义 `Props` 接口 |
+| API 响应 | 必须定义响应类型 |
+| useState | 必须提供初始值类型或泛型 |
+
+```typescript
+// 禁止
+const [state, setState] = useState(null);
+function fetchData() { ... }
+
+// 正确
+const [state, setState] = useState<Strategy | null>(null);
+function fetchData(): Promise<ApiResponse<Strategy>> { ... }
+```
+
+### 1.3 类型导入
+
+```typescript
+// 使用 type 关键字进行类型导入
+import type { Strategy, Portfolio } from '@/types';
+import type { StrategyStatus } from '@/types/shared';
+```
+
+### 1.4 类型守卫
+
+处理外部数据时使用类型守卫：
+
+```typescript
+function isStrategy(data: unknown): data is Strategy {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'id' in data &&
+    'name' in data
+  );
+}
+
+// 使用
+const parseResponse = (data: unknown): Strategy => {
+  if (!isStrategy(data)) throw new Error('Invalid data');
+  return data;
+};
+```
+
+### 1.5 禁止类型断言（除非必要）
+
+```typescript
+// 仅在必要时使用双重断言
+const data = response as unknown as Strategy;
+```
+
+## 预定义类型
+
+项目已在 `@/types/shared.ts` 中定义了通用类型，优先使用：
+
+```typescript
+import type {
+  ApiResponse,
+  PaginatedResponse,
+  BaseEntity,
+  Strategy,
+  Portfolio,
+  Container,
+  BacktestConfig,
+  BacktestResult,
+  AppError,
+  ValidationError,
+  NotFoundError,
+  DeepPartial,
+  Nullable,
+} from '@/types/shared';
+```

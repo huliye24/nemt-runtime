@@ -1,0 +1,25 @@
+{
+  "name": "nemt-stop-execution",
+  "description": "停止策略的执行。支持优雅停止（等待当前订单完成）和强制停止。\n\n**参数说明**:\n- execution_id: 执行实例ID，必填\n- force: 是否强制停止，默认 false（优雅停止）\n\n**权限要求**: 需要 'execute' 权限级别\n\n**示例**: 优雅停止策略",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "execution_id": {
+        "type": "string",
+        "description": "执行实例ID"
+      },
+      "force": {
+        "type": "boolean",
+        "default": false,
+        "description": "是否强制停止（可能丢失当前订单）"
+      }
+    },
+    "required": ["execution_id"],
+    "additionalProperties": false,
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  },
+  "permissions": {
+    "level": "execute",
+    "description": "停止执行需要 execute 权限"
+  }
+}

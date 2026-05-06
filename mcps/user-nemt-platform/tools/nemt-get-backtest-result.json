@@ -1,0 +1,20 @@
+{
+  "name": "nemt-get-backtest-result",
+  "description": "获取策略回测结果，包含收益率、夏普比率、最大回撤等关键指标。\n\n**参数说明**:\n- backtest_id: 回测任务ID，必填\n\n**权限要求**: 需要 'read' 权限级别\n\n**返回指标**:\n- 总收益率、年化收益率、夏普比率\n- 最大回撤、胜率、盈亏比\n- 交易次数、平均持仓时间",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "backtest_id": {
+        "type": "string",
+        "description": "回测任务ID"
+      }
+    },
+    "required": ["backtest_id"],
+    "additionalProperties": false,
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  },
+  "permissions": {
+    "level": "read",
+    "description": "查看回测结果需要 read 权限"
+  }
+}

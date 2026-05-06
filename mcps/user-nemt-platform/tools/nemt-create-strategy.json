@@ -1,0 +1,35 @@
+{
+  "name": "nemt-create-strategy",
+  "description": "创建新的量化交易策略。通过协议层而非直接修改源代码来创建策略，确保操作安全可控。\n\n**参数说明**:\n- name: 策略名称，必填，1-50个字符\n- code: 策略代码，必填，Python 或自定义 DSL\n- tags: 标签列表，可选，用于分类\n\n**权限要求**: 需要 'write' 权限级别\n\n**示例**: 创建双均线策略",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50,
+        "description": "策略名称，1-50个字符"
+      },
+      "code": {
+        "type": "string",
+        "minLength": 1,
+        "description": "策略代码，支持 Python 或 DSL"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 10,
+        "description": "标签列表，最多10个"
+      }
+    },
+    "required": ["name", "code"],
+    "additionalProperties": false,
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  },
+  "permissions": {
+    "level": "write",
+    "description": "创建策略需要 write 权限"
+  }
+}

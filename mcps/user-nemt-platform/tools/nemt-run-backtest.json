@@ -1,0 +1,49 @@
+{
+  "name": "nemt-run-backtest",
+  "description": "对指定策略运行历史回测，验证策略有效性。\n\n**参数说明**:\n- strategy_id: 策略ID，必填\n- symbol: 交易品种，必填（如 BTCUSDT）\n- start_date: 回测开始日期，必填（YYYY-MM-DD）\n- end_date: 回测结束日期，必填（YYYY-MM-DD）\n- initial_capital: 初始资金，默认 100000\n- commission: 手续费率，默认 0.001\n\n**权限要求**: 需要 'execute' 权限级别\n\n**示例**: 回测双均线策略",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "strategy_id": {
+        "type": "string",
+        "description": "要回测的策略ID"
+      },
+      "symbol": {
+        "type": "string",
+        "description": "交易品种，如 BTCUSDT、ETHUSDT"
+      },
+      "start_date": {
+        "type": "string",
+        "format": "date",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+        "description": "回测开始日期 YYYY-MM-DD"
+      },
+      "end_date": {
+        "type": "string",
+        "format": "date",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+        "description": "回测结束日期 YYYY-MM-DD"
+      },
+      "initial_capital": {
+        "type": "number",
+        "default": 100000,
+        "minimum": 1000,
+        "description": "初始资金金额"
+      },
+      "commission": {
+        "type": "number",
+        "default": 0.001,
+        "minimum": 0,
+        "maximum": 0.1,
+        "description": "手续费率 (0-10%)"
+      }
+    },
+    "required": ["strategy_id", "symbol", "start_date", "end_date"],
+    "additionalProperties": false,
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  },
+  "permissions": {
+    "level": "execute",
+    "description": "执行回测需要 execute 权限"
+  }
+}

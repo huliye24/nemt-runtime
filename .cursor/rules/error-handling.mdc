@@ -1,0 +1,250 @@
+---
+description: 错误处理规范
+alwaysApply: true
+---
+
+# 错误处理规范
+
+本项目使用统一的错误处理模式，确保错误可追踪和可处理。
+
+## 错误类型层次
+
+### 7.1 AppError 基础类
+
+```typescript
+import { AppError, ValidationError, NotFoundError } from '@/types/shared';
+
+// 业务错误
+throw new AppError('操作失败', 'OPERATION_FAILED', 400);
+
+// 验证错误
+throw new ValidationError('邮箱格式不正确', 'email');
+
+// 资源未找到
+throw new NotFoundError('策略', strategyId);
+```
+
+### 7.2 错误类定义
+
+已在 `@/types/shared.ts` 中预定义：
+
+```typescript
+// 基础错误
+class AppError extends Error {
+  constructor(message: string, code: string, status?: number)
+}
+
+// 验证错误（400）
+class ValidationError extends AppError {
+  constructor(message: string, field?: string)
+}
+
+// 未找到错误（404）
+class NotFoundError extends AppError {
+  constructor(resource: string, id?: string)
+}
+```
+
+## 错误处理模式
+
+### 7.3 使用 try/catch
+
+```typescript
+// 推荐 - 完整的错误处理
+try {
+  const data = await fetchData();
+  setResult(data);
+} catch (error) {
+  if (error instanceof AppError) {
+    showError(error.message);
+  } else {
+    showError('发生未知错误');
+    console.error(error);
+  }
+}
+```
+
+### 7.4 禁止裸 Promise
+
+```typescript
+// 禁止
+fetchData().then(data => ...)
+
+// 推荐
+await fetchData();
+```
+
+### 7.5 禁止空 catch
+
+```typescript
+// 禁止 - 空 catch
+try {
+  await fetchData();
+} catch (error) {
+  // 空
+}
+
+// 推荐 - 至少记录错误
+try {
+  await fetchData();
+} catch (error) {
+  console.error('Fetch failed:', error);
+  throw error; // 重新抛出以便上层处理
+}
+```
+
+## async/await 优先
+
+### 7.6 异步函数规范
+
+```typescript
+// 推荐 - async/await
+async function loadData() {
+  try {
+    setLoading(true);
+    const data = await api.fetch();
+    setData(data);
+  } catch (error) {
+    handleError(error);
+  } finally {
+    setLoading(false);
+  }
+}
+
+// 避免 - .then/.catch
+function loadData() {
+  setLoading(true);
+  api.fetch()
+    .then(data => setData(data))
+    .catch(handleError)
+    .finally(() => setLoading(false));
+}
+```
+
+### 7.7 Promise.all 错误处理
+
+```typescript
+// 等待所有请求，任一失败则整体失败
+const [data1, data2] = await Promise.all([
+  fetchData1(),
+  fetchData2(),
+]);
+
+// 允许部分失败
+const results = await Promise.allSettled([
+  fetchData1(),
+  fetchData2(),
+]);
+
+results.forEach(result => {
+  if (result.status === 'fulfilled') {
+    // 处理成功
+  } else {
+    // 处理失败
+    console.error(result.reason);
+  }
+});
+```
+
+## 自定义 Hook 错误处理
+
+### 7.8 useSafeAsync 模式
+
+```typescript
+// 封装通用异步操作
+export function useSafeAsync<T>(
+  asyncFn: () => Promise<T>,
+  options?: { onError?: (e: Error) => void }
+) {
+  const [state, setState] = useState<AsyncState<T>>({
+    data: null,
+    loading: false,
+    error: null,
+  });
+
+  const execute = useCallback(async () => {
+    setState(s => ({ ...s, loading: true, error: null }));
+    try {
+      const data = await asyncFn();
+      setState({ data, loading: false, error: null });
+    } catch (error) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      setState({ data: null, loading: false, error: err });
+      options?.onError?.(err);
+    }
+  }, [asyncFn, options]);
+
+  return { ...state, execute };
+}
+```
+
+### 7.9 使用示例
+
+```typescript
+const { data, loading, error, execute } = useSafeAsync(
+  () => fetchStrategies(),
+  { onError: (e) => showToast(e.message) }
+);
+
+// 调用
+useEffect(() => {
+  execute();
+}, []);
+```
+
+## 错误边界
+
+### 7.10 ErrorBoundary 组件
+
+```typescript
+import { ErrorBoundary } from '@/components/common';
+
+// 使用
+<ErrorBoundary fallback={<ErrorFallback />}>
+  <RiskyComponent />
+</ErrorBoundary>
+```
+
+## 错误类型检查
+
+### 7.11 instanceof 检查顺序
+
+```typescript
+catch (error) {
+  if (error instanceof ValidationError) {
+    // 处理验证错误
+  } else if (error instanceof NotFoundError) {
+    // 处理未找到错误
+  } else if (error instanceof AppError) {
+    // 处理其他业务错误
+  } else {
+    // 处理未知错误
+    throw error;
+  }
+}
+```
+
+## 错误日志
+
+### 7.12 日志级别
+
+```typescript
+// 警告 - 可恢复的错误
+console.warn('Retrying...', { attempt: 3 });
+
+// 错误 - 需要关注的错误
+console.error('Request failed:', error);
+
+// 仅在开发环境记录
+if (process.env.NODE_ENV === 'development') {
+  console.log('Debug info:', data);
+}
+```
+
+## 最佳实践
+
+1. **不要吞掉错误** - 至少记录或重新抛出
+2. **提供有意义的错误信息** - 不要只说 "Error occurred"
+3. **区分错误类型** - 验证错误、网络错误、业务错误
+4. **在边界层处理** - 在组件层处理错误，而非业务逻辑层
+5. **使用 Error Boundaries** - 防止整个应用崩溃

@@ -1,0 +1,25 @@
+{
+  "name": "nemt-delete-strategy",
+  "description": "删除指定的量化交易策略。删除前会进行二次确认提示。\n\n**参数说明**:\n- strategy_id: 策略ID，必填\n- force: 是否强制删除（即使正在运行），默认 false\n\n**权限要求**: 需要 'delete' 权限级别\n\n**示例**: 删除草稿策略",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "strategy_id": {
+        "type": "string",
+        "description": "要删除的策略唯一标识符"
+      },
+      "force": {
+        "type": "boolean",
+        "default": false,
+        "description": "强制删除正在运行的策略"
+      }
+    },
+    "required": ["strategy_id"],
+    "additionalProperties": false,
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  },
+  "permissions": {
+    "level": "delete",
+    "description": "删除策略需要 delete 权限"
+  }
+}

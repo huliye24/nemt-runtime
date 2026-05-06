@@ -1,0 +1,92 @@
+{
+  "name": "nemt-platform",
+  "version": "1.0.0",
+  "description": "NEMT Platform - Quantitative Trading Strategy Container Platform",
+  "main": "dist/desktop/main/index.js",
+  "author": "NEMT Lab",
+  "license": "MIT",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:desktop\"",
+    "dev:web": "vite",
+    "dev:desktop": "npm run build:desktop && electron .",
+    "build": "npm run build:web && npm run build:desktop",
+    "build:web": "tsc && vite build",
+    "build:desktop": "tsc -p src/desktop/tsconfig.json",
+    "package": "npm run build && electron-builder",
+    "package:win": "npm run build && electron-builder --win",
+    "typecheck": "tsc --noEmit",
+    "refactor:report": "npx ts-node scripts/refactor-report.ts",
+    "refactor:check": "npx eslint --config eslint.config.refactor.js src/"
+  },
+  "dependencies": {
+    "electron-log": "^5.0.0",
+    "electron-store": "^8.1.0",
+    "lightweight-charts": "^4.2.3",
+    "lucide-react": "^0.263.1",
+    "zustand": "^4.5.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.59.2",
+    "@typescript-eslint/parser": "^8.59.2",
+    "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "postcss": "^8.4.32",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
+  },
+  "build": {
+    "appId": "com.nemt.platform",
+    "productName": "NEMT Platform",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "src/nemt-os",
+        "to": "nemt-os",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "asar": true,
+    "compression": "maximum"
+  }
+}

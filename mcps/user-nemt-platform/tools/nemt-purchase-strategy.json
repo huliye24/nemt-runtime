@@ -1,0 +1,26 @@
+{
+  "name": "nemt-purchase-strategy",
+  "description": "从策略市场购买策略。购买后策略会自动添加到用户账户。\n\n**参数说明**:\n- market_strategy_id: 市场策略ID，必填\n- payment_method: 支付方式（balance=余额，coupon=优惠券）\n\n**权限要求**: 需要 'purchase' 权限级别，且余额充足\n\n**示例**: 购买双均线策略",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "market_strategy_id": {
+        "type": "string",
+        "description": "市场策略ID"
+      },
+      "payment_method": {
+        "type": "string",
+        "enum": ["balance", "coupon"],
+        "default": "balance",
+        "description": "支付方式"
+      }
+    },
+    "required": ["market_strategy_id"],
+    "additionalProperties": false,
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  },
+  "permissions": {
+    "level": "purchase",
+    "description": "购买策略需要 purchase 权限和足够余额"
+  }
+}

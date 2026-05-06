@@ -1,0 +1,1 @@
+{"version":3,"file":"windowContract.d.ts","sourceRoot":"","sources":["windowContract.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,iBAAiB;IAChC,QAAQ,EAAE,MAAM,IAAI,CAAC;IACrB,QAAQ,EAAE,MAAM,IAAI,CAAC;IACrB,KAAK,EAAE,MAAM,IAAI,CAAC;IAClB,WAAW,EAAE,MAAM,OAAO,CAAC,OAAO,CAAC,CAAC;CACrC"}

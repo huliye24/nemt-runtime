@@ -1,0 +1,181 @@
+---
+description: 状态管理规范
+alwaysApply: true
+---
+
+# 状态管理规范
+
+本项目使用 Zustand 进行状态管理，所有状态必须遵循以下规范。
+
+## Store 文件位置
+
+所有 Store 必须在 `src/stores/` 目录下，通过 `src/stores/index.ts` 统一导出。
+
+```
+src/stores/
+├── index.ts          # 统一导出
+├── uiStore.ts        # UI 状态
+├── strategyStore.ts  # 策略状态
+├── portfolioStore.ts # 投资组合状态
+├── containerStore.ts # 容器状态
+├── backtestStore.ts  # 回测状态
+├── positionStore.ts  # 持仓状态
+└── dataMarketStore.ts # 数据市场状态
+```
+
+## Store 结构
+
+### 4.1 标准 Store 模板
+
+```typescript
+import { create } from 'zustand';
+
+interface State {
+  items: Item[];
+  selectedId: string | null;
+}
+
+interface Actions {
+  addItem: (item: Item) => void;
+  removeItem: (id: string) => void;
+  selectItem: (id: string | null) => void;
+}
+
+export const useStore = create<State & Actions>()((set, get) => ({
+  // State
+  items: [],
+  selectedId: null,
+
+  // Actions
+  addItem: (item) => set(state => ({
+    items: [...state.items, item],
+  })),
+  removeItem: (id) => set(state => ({
+    items: state.items.filter(i => i.id !== id),
+  })),
+  selectItem: (id) => set({ selectedId: id }),
+}));
+
+// Selectors（放在文件底部）
+export const useItems = () => useStore(state => state.items);
+export const useSelectedId = () => useStore(state => state.selectedId);
+```
+
+## 状态类型
+
+### 5.1 useState 必须提供类型
+
+```typescript
+// 禁止
+const [data, setData] = useState(null);
+const [loading, setLoading] = useState(undefined);
+
+// 正确
+const [data, setData] = useState<Strategy[]>([]);
+const [loading, setLoading] = useState<boolean>(false);
+const [error, setError] = useState<string | null>(null);
+```
+
+### 5.2 复杂状态使用接口
+
+```typescript
+interface LoadingState {
+  isLoading: boolean;
+  progress: number;
+  error: string | null;
+}
+
+const [state, setState] = useState<LoadingState>({
+  isLoading: false,
+  progress: 0,
+  error: null,
+});
+```
+
+## 状态更新模式
+
+### 5.3 使用函数式更新
+
+```typescript
+// 避免依赖当前状态
+setState(prev => ({
+  ...prev,
+  items: [...prev.items, newItem],
+}));
+```
+
+### 5.4 复杂更新使用 get()
+
+```typescript
+updateItem: (id, updates) => set(state => {
+  const items = state.items.map(item =>
+    item.id === id ? { ...item, ...updates } : item
+  );
+  return { items };
+}),
+
+// 使用 get() 获取派生状态
+recalculateAllocations: () => {
+  const portfolio = get().getSelectedPortfolio();
+  if (!portfolio) return;
+  // ... 计算逻辑
+}
+```
+
+## Selectors
+
+### 5.5 派生状态使用 Selector
+
+```typescript
+// 在组件中使用
+const activeItems = useStore(state => 
+  state.items.filter(item => item.status === 'active')
+);
+
+// 或使用自定义 Hook
+export const useActiveItems = () => useStore(state =>
+  state.items.filter(item => item.status === 'active')
+);
+```
+
+### 5.6 复杂 Selector 提取
+
+```typescript
+// 避免在组件内重复复杂逻辑
+const selectedItem = useStore(state => {
+  const { items, selectedId } = state;
+  return items.find(item => item.id === selectedId) ?? null;
+});
+```
+
+## Store 命名规范
+
+| 名称 | 文件 | Hook |
+|------|------|------|
+| UI Store | `uiStore.ts` | `useUIStore` |
+| Strategy Store | `strategyStore.ts` | `useStrategyStore` |
+| Portfolio Store | `portfolioStore.ts` | `usePortfolioStore` |
+| Container Store | `containerStore.ts` | `useContainerStore` |
+| Backtest Store | `backtestStore.ts` | `useBacktestStore` |
+
+## 导出规范
+
+所有 Store 必须从 `src/stores/index.ts` 导出：
+
+```typescript
+// src/stores/index.ts
+export { useUIStore, useTheme, ... } from './uiStore';
+export { useStrategyStore, useStrategies, ... } from './strategyStore';
+export { usePortfolioStore, usePortfolios, ... } from './portfolioStore';
+export { useContainerStore, useContainers, ... } from './containerStore';
+export { useBacktestStore } from './backtestStore';
+export { usePositionStore } from './positionStore';
+export { useDataMarketStore } from './dataMarketStore';
+```
+
+## 禁止的行为
+
+1. **禁止在组件内直接修改 store 状态**
+2. **禁止在 store 外部定义共享状态**
+3. **禁止使用多个 store 实例**
+4. **禁止在 selector 内进行副作用操作**

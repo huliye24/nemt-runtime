@@ -1,0 +1,225 @@
+---
+description: 命名规范
+alwaysApply: true
+---
+
+# 命名规范
+
+本项目遵循统一的命名约定，确保代码可读性和一致性。
+
+## 文件命名
+
+| 类型 | 规范 | 示例 |
+|------|------|------|
+| React 组件 | PascalCase | `StrategyList.tsx`, `ContainerCard.tsx` |
+| 类型文件 | PascalCase | `shared.ts`, `portfolio.ts` |
+| Store 文件 | camelCase + Store | `portfolioStore.ts` |
+| Hook 文件 | camelCase + use | `useSafeAsync.ts` |
+| 工具文件 | camelCase | `validation.ts` |
+| 常量文件 | camelCase | `constants.ts` |
+
+## 变量命名
+
+| 类型 | 规范 | 示例 |
+|------|------|------|
+| 变量 | camelCase | `totalCapital`, `isLoading` |
+| 布尔值 | is/has/can 前缀 | `isActive`, `hasPermission`, `canEdit` |
+| 数组 | 复数名词 | `strategies`, `positions`, `items` |
+| 对象 | 名词或名词短语 | `userData`, `configOptions` |
+| 数字索引 | idx 或完整名称 | `idx`, `strategyIndex` |
+
+```typescript
+// 变量命名
+const userName = 'John';
+const isLoading = false;
+const strategies = [];
+const strategyMap = new Map();
+
+// 布尔值命名
+const hasError = false;
+const canSubmit = true;
+const isVisible = true;
+```
+
+## 函数命名
+
+| 类型 | 规范 | 示例 |
+|------|------|------|
+| 事件处理 | handle 前缀 | `handleClick`, `handleSubmit` |
+| 获取数据 | get/use 前缀 | `getData`, `useFetch` |
+| 设置数据 | set 前缀 | `setData`, `updateState` |
+| 布尔判断 | is/has/can 前缀 | `isValid`, `hasPermission` |
+| 异步操作 | async 后缀或动词 | `fetchData`, `saveAsync` |
+
+```typescript
+// 事件处理函数
+const handleClick = () => {};
+const handleSubmit = (data: FormData) => {};
+const handleToggle = (id: string) => {};
+
+// 数据获取
+const fetchStrategies = async () => {};
+const useStrategies = () => {};
+
+// 布尔判断
+const isEmpty = (arr: unknown[]) => arr.length === 0;
+const hasPermission = (user: User) => user.role === 'admin';
+```
+
+## Props 命名
+
+### 6.1 事件回调使用 on 前缀
+
+```typescript
+interface ButtonProps {
+  onClick: () => void;
+  onSubmit: (data: FormData) => void;
+  onChange: (value: string) => void;
+  onToggle?: (id: string) => void;
+}
+
+interface ModalProps {
+  onClose: () => void;
+  onConfirm: (data: ConfirmData) => void;
+  onCancel?: () => void;
+}
+```
+
+### 6.2 数据 props 使用名词
+
+```typescript
+interface ListProps {
+  items: Item[];
+  selectedId: string | null;
+  totalCount: number;
+  loading?: boolean;
+}
+```
+
+## 类型/接口命名
+
+| 类型 | 规范 | 示例 |
+|------|------|------|
+| 接口 | PascalCase + 可选前缀 | `StrategyData`, `ContainerInfo` |
+| 类型别名 | PascalCase | `StrategyStatus`, `ApiResponse` |
+| 枚举成员 | PascalCase | `Status.Active`, `Color.Red` |
+
+```typescript
+// 接口命名
+interface StrategyData {
+  id: string;
+  name: string;
+  status: StrategyStatus;
+}
+
+interface ContainerConfig {
+  image: string;
+  ports: Port[];
+}
+
+// 类型别名
+type StrategyStatus = 'draft' | 'ready' | 'running';
+type ApiResponse<T> = { data: T; success: boolean };
+
+// Props 接口
+interface StrategyCardProps {
+  strategy: StrategyData;
+  onSelect: (id: string) => void;
+}
+```
+
+## 常量命名
+
+使用 SCREAMING_SNAKE_CASE：
+
+```typescript
+const MAX_RETRY_COUNT = 3;
+const API_BASE_URL = 'https://api.example.com';
+const DEFAULT_TIMEOUT = 5000;
+const COLORS = {
+  PRIMARY: '#6b21a8',
+  SECONDARY: '#262626',
+} as const;
+```
+
+## Import 顺序
+
+按以下顺序组织 import 语句：
+
+```typescript
+// 1. React
+import React from 'react';
+
+// 2. 外部库
+import { create } from 'zustand';
+import { useState, useEffect } from 'react';
+import { LucideIcon } from 'lucide-react';
+
+// 3. 类型导入（使用 type 关键字）
+import type { Strategy } from '@/types';
+import type { ApiResponse } from '@/types/shared';
+
+// 4. 内部模块
+import { useStrategyStore } from '@/stores';
+import { useSafeAsync } from '@/hooks';
+
+// 5. 预设
+import { Colors, ButtonVariants } from '@/presets/presets';
+import { ComponentStyles, Shadows } from '@/presets/presets';
+
+// 6. 相对路径
+import { helper } from './utils';
+import { localConstant } from './constants';
+```
+
+## 常见命名示例
+
+```typescript
+// 命名示例
+
+// 变量
+const strategyName = 'Moving Average';
+const isRunning = true;
+const strategies = [];
+
+// 函数
+function handleSubmit() {}
+function getStrategyById(id: string) {}
+
+// React 组件
+export function StrategyList() {}
+export function ContainerCard() {}
+
+// Types/Interfaces
+interface StrategyData {}
+type StrategyStatus = 'draft' | 'ready';
+
+// Props
+interface StrategyCardProps {
+  strategy: StrategyData;
+  onSelect: (id: string) => void;
+}
+```
+
+## 禁止的命名
+
+```typescript
+// 禁止 - 模糊命名
+const data = fetchData();
+const temp = processData();
+const result = calculate();
+
+// 禁止 - 缩写过多
+const strat = getStrategy();
+const cfg = loadConfig();
+
+// 禁止 - 匈牙利命名法
+const strName = 'John';
+const boolIsActive = true;
+const intCount = 0;
+
+// 推荐 - 清晰命名
+const strategy = fetchStrategy();
+const tempData = preprocessData();
+const calculationResult = calculate();
+```

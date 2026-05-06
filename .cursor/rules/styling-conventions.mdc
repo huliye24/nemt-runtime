@@ -1,0 +1,184 @@
+---
+description: 样式规范
+alwaysApply: true
+---
+
+# 样式规范
+
+本项目使用内联样式 + TailwindCSS 工具类，所有样式必须使用预设，禁止硬编码。
+
+## 颜色使用
+
+### 3.1 必须从 presets 导入
+
+```typescript
+// 禁止硬编码颜色
+style={{ backgroundColor: '#141414', color: '#ffffff' }}
+
+// 正确 - 从 presets 导入
+import { Colors } from '@/presets/presets';
+style={{ backgroundColor: Colors.bgSecondary, color: Colors.text }}
+```
+
+### 3.2 颜色变量映射
+
+| 用途 | 变量 | 色值 |
+|------|------|------|
+| 主背景 | `Colors.bg` | #0d0d0d |
+| 卡片背景 | `Colors.bgSecondary` | #141414 |
+| 组件背景 | `Colors.bgTertiary` | #1a1a1a |
+| 边框 | `Colors.border` | #2a2a2a |
+| 边框高亮 | `Colors.borderHover` | #3d3660 |
+| 边框聚焦 | `Colors.borderFocus` | #6b21a8 |
+| 主文字 | `Colors.text` | #ffffff |
+| 次要文字 | `Colors.textSecondary` | #a3a3a3 |
+| 弱化文字 | `Colors.textMuted` | #737373 |
+| 强调色 | `Colors.accent` | #c084fc |
+| 成功色 | `Colors.success` | #22c55e |
+| 警告色 | `Colors.warning` | #fbbf24 |
+| 错误色 | `Colors.error` | #ef4444 |
+
+## 按钮变体
+
+```typescript
+import { ButtonVariants } from '@/presets/presets';
+
+// primary - 强调操作
+ButtonVariants.primary
+// { bg: '#6b21a8', color: '#ffffff' }
+
+// secondary - 普通操作
+ButtonVariants.secondary
+// { bg: '#262626', color: '#a3a3a3', border: '1px solid #2a2a2a' }
+
+// ghost - 低优先级
+ButtonVariants.ghost
+// { bg: 'transparent', color: '#737373' }
+
+// danger - 危险操作
+ButtonVariants.danger
+// { bg: '#450a0a', color: '#ef4444' }
+
+// success - 成功操作
+ButtonVariants.success
+// { bg: '#052e16', color: '#22c55e' }
+```
+
+## 交互状态
+
+### 3.3 悬停效果
+
+```typescript
+// 使用 onMouseEnter/onMouseLeave
+onMouseEnter={(e) => {
+  e.currentTarget.style.borderColor = Colors.borderHover;
+}}
+onMouseLeave={(e) => {
+  e.currentTarget.style.borderColor = Colors.border;
+}}
+```
+
+### 3.4 聚焦效果
+
+```typescript
+// 使用 onFocus/onBlur
+onFocus={(e) => e.target.style.borderColor = Colors.borderFocus}
+onBlur={(e) => e.target.style.borderColor = Colors.border}
+```
+
+## 圆角规范
+
+| 尺寸 | 样式 | 用途 |
+|------|------|------|
+| sm | `rounded-lg` | 小按钮、标签 |
+| md | `rounded-xl` | 输入框、卡片 |
+| lg | `rounded-2xl` | 模态框、大卡片 |
+| full | `rounded-full` | 圆形按钮 |
+
+## 阴影使用
+
+```typescript
+import { Shadows } from '@/presets/presets';
+
+Shadows.sm   // 轻微阴影
+Shadows.md   // 中等阴影
+Shadows.lg   // 大阴影
+Shadows.glow // 发光效果（用于强调）
+```
+
+## 状态标签
+
+```typescript
+import { StatusConfig } from '@/presets/presets';
+
+// 使用预定义状态配置
+StatusConfig.draft    // { label: '草稿', color: Colors.textMuted, bg: Colors.bgTertiary }
+StatusConfig.ready   // { label: '就绪', color: Colors.success, bg: Colors.successBg }
+StatusConfig.running // { label: '运行中', color: Colors.info, bg: Colors.infoBg }
+StatusConfig.paused  // { label: '已暂停', color: Colors.warning, bg: Colors.warningBg }
+StatusConfig.error   // { label: '错误', color: Colors.error, bg: Colors.errorBg }
+```
+
+## 组件样式预设
+
+```typescript
+import { ComponentStyles } from '@/presets/presets';
+
+// 卡片
+ComponentStyles.card.default
+ComponentStyles.card.elevated
+ComponentStyles.card.interactive // 包含 hover 效果
+
+// 按钮
+ComponentStyles.button.padding   // 'px-4 py-2.5'
+ComponentStyles.button.radius    // 'rounded-xl'
+ComponentStyles.button.fontSize  // 'text-sm'
+ComponentStyles.button.fontWeight // 'font-medium'
+
+// 输入框
+ComponentStyles.input.padding    // 'px-4 py-3'
+ComponentStyles.input.radius     // 'rounded-xl'
+```
+
+## 动画/过渡
+
+```typescript
+import { Transitions } from '@/presets/presets';
+
+Transitions.fast   // 'transition-all duration-150'
+Transitions.normal // 'transition-all duration-200'
+Transitions.slow  // 'transition-all duration-300'
+```
+
+## 卡片模板示例
+
+```tsx
+import { Colors } from '@/presets/presets';
+
+<div
+  className="rounded-xl p-5 transition-all"
+  style={{
+    backgroundColor: Colors.bgSecondary,
+    border: `1px solid ${Colors.border}`,
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.borderColor = Colors.borderHover;
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.borderColor = Colors.border;
+  }}
+>
+  {/* 内容 */}
+</div>
+```
+
+## 禁用硬编码的完整列表
+
+以下值必须从 presets 导入，禁止硬编码：
+
+- 所有颜色值（#0d0d0d, #141414, #1a1a1a, #2a2a2a, #ffffff 等）
+- 按钮背景色和文字色
+- 边框颜色
+- 成功/警告/错误语义色
+- 圆角值（应使用 Tailwind 类名）
+- 阴影值

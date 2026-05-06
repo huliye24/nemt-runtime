@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(sshpass *)",
+      "Bash(python *)",
+      "Bash(tar --exclude='node_modules' --exclude='dist' --exclude='release' --exclude='.git' --exclude='NEMT-Simulator2*' --exclude='mcps' --exclude='experiments' -czf /tmp/nemt-transfer.tar.gz -C \"E:/NEMT runtime\" .)",
+      "Read(//tmp/**)",
+      "Read(//c/Users/Administrator/AppData/Local/Temp/**)",
+      "Read(//e//**)",
+      "Bash(python3 *)",
+      "Bash(timeout 10 ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 -o BatchMode=yes root@42.51.42.123 \"echo connected\")",
+      "Bash(ssh *)",
+      "Bash(where plink *)",
+      "Bash(where putty *)",
+      "Bash(pip3 list *)",
+      "Bash(python3.12 -c \"import paramiko; print\\('ok'\\)\")",
+      "Bash(pip3 show *)",
+      "Bash(npx tsc *)",
+      "Bash(ls -la .env*)",
+      "Bash(ls data/)",
+      "Bash(ls logs/)",
+      "Bash(rsync --version)",
+      "Bash(tar -czf /tmp/nemt-runtime.tar.gz --exclude=node_modules --exclude=dist --exclude=.git --exclude=release --exclude=.idea --exclude=NEMT-Simulator2 --exclude=NEMT-Simulator2-cloudflare-workers-autoconfig --exclude=NEMT-Simulator2-feature-cloudflare-deploy --exclude=NEMT-Simulator2-feature-cto-agent-system --exclude=NEMT-Simulator2-feature-mcp-quant-sync .)"
+    ]
+  }
+}

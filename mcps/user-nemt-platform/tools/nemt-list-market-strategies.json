@@ -1,0 +1,43 @@
+{
+  "name": "nemt-list-market-strategies",
+  "description": "浏览策略市场，查看可购买的策略。\n\n**参数说明**:\n- category: 策略分类（趋势/套利/做市/做T/马丁格尔）\n- min_price: 最低价格\n- max_price: 最高价格\n- sort_by: 排序方式（rating | purchases | price_asc | price_desc | newest）\n- limit: 返回数量\n\n**权限要求**: 需要 'read' 权限级别\n\n**示例**: 查找高评分趋势策略",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "category": {
+        "type": "string",
+        "enum": ["趋势", "套利", "做市", "做T", "马丁格尔", "网格", "其他"],
+        "description": "策略分类"
+      },
+      "min_price": {
+        "type": "number",
+        "minimum": 0,
+        "description": "最低价格"
+      },
+      "max_price": {
+        "type": "number",
+        "minimum": 0,
+        "description": "最高价格"
+      },
+      "sort_by": {
+        "type": "string",
+        "enum": ["rating", "purchases", "price_asc", "price_desc", "newest"],
+        "default": "rating",
+        "description": "排序方式"
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 50,
+        "default": 20,
+        "description": "返回数量"
+      }
+    },
+    "additionalProperties": false,
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  },
+  "permissions": {
+    "level": "read",
+    "description": "浏览市场需要 read 权限"
+  }
+}

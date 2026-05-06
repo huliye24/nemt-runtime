@@ -1,0 +1,159 @@
+---
+description: React 组件规范
+globs: **/*.tsx
+---
+
+# React 组件规范
+
+本项目使用 React 18 + TypeScript，组件开发必须遵循以下规范。
+
+## 组件结构
+
+### 2.1 文件结构顺序
+
+```
+1. React import
+2. 外部库 import
+3. 类型 import
+4. 内部模块 import
+5. 预设 import
+6. Props 接口定义
+7. 类型定义
+8. 常量定义
+9. 辅助函数
+10. 组件实现
+```
+
+### 2.2 组件模板
+
+```typescript
+import React from 'react';
+import { Colors } from '@/presets/presets';
+
+interface ComponentProps {
+  title: string;
+  onAction: () => void;
+  variant?: 'default' | 'compact';
+}
+
+export function ComponentName({ title, onAction, variant = 'default' }: ComponentProps) {
+  // 1. Hooks（按字母顺序）
+  // 2. 派生状态
+  // 3. 事件处理
+  // 4. 渲染
+
+  return (
+    <div style={{ backgroundColor: Colors.bgSecondary }}>
+      {title}
+    </div>
+  );
+}
+```
+
+## 组件大小限制
+
+| 类型 | 警告 | 错误 |
+|------|------|------|
+| 普通 .tsx 文件 | 150 行 | 200 行 |
+| React 组件 render | 50 行 | 80 行 |
+
+## 组件拆分时机
+
+满足以下任一条件时应拆分组件：
+
+1. 组件有多个明确的功能区域
+2. 某个区域逻辑复杂（>30行）
+3. 某个区域可能在其他地方复用
+4. props 数量超过 5 个
+5. 组件超过 150 行
+
+## 事件处理命名
+
+```typescript
+// 使用 handle 前缀命名事件处理函数
+const handleClick = () => { ... };
+const handleSubmit = (data: FormData) => { ... };
+const handleToggleSelect = (id: string) => { ... };
+
+// 使用 on 前缀定义 props
+interface Props {
+  onSubmit: (data: FormData) => void;
+  onToggle?: () => void;
+}
+```
+
+## Hooks 规则
+
+- 禁止在条件语句中调用 hooks
+- 禁止在循环中调用 hooks
+- Hooks 放在组件顶部
+- 按字母顺序排列 hooks
+
+```typescript
+// 禁止
+if (condition) {
+  const { data } = useFetch();
+}
+
+// 正确
+const { data } = useFetch();
+```
+
+## Props 设计
+
+### 3.1 必须定义 Props 接口
+
+```typescript
+// 禁止
+export function Button({ label, onClick }) { ... }
+
+// 正确
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  variant?: 'primary' | 'secondary';
+}
+
+export function Button({ label, onClick, variant = 'primary' }: ButtonProps) { ... }
+```
+
+### 3.2 提供默认值
+
+```typescript
+interface Props {
+  variant?: 'default' | 'compact';
+  disabled?: boolean;
+}
+
+export function Component({ variant = 'default', disabled = false }: Props) { ... }
+```
+
+## 组件拆分示例
+
+```typescript
+// 拆分前 - 单一巨型组件
+function StrategyExecution() {
+  // 300+ 行，包含策略池、监控、持仓、订单等多个区域
+}
+
+// 拆分后 - 多个专注组件
+// StrategyExecution.tsx - 主容器
+// execution/StrategyPoolItem.tsx - 策略池项
+// execution/MonitorTab.tsx - 监控面板
+// execution/PositionTab.tsx - 持仓面板
+// execution/OrdersTab.tsx - 订单面板
+// execution/AddStrategyModal.tsx - 添加策略弹窗
+```
+
+## 子组件目录
+
+当组件有多个相关子组件时，创建子目录：
+
+```
+components/
+├── ParentComponent.tsx      # 主组件
+└── ParentComponent/          # 子组件目录
+    ├── ChildA.tsx
+    ├── ChildB.tsx
+    └── index.ts              # 统一导出
+```

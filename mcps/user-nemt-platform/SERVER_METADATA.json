@@ -1,0 +1,5 @@
+{
+  "serverIdentifier": "user-nemt-platform",
+  "serverName": "NEMT Platform",
+  "description": "量化交易策略管理平台 - 策略创建、回测、执行、市场交易"
+}

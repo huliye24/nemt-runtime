@@ -1,0 +1,40 @@
+{
+  "name": "nemt-list-strategies",
+  "description": "列出当前用户的所有量化交易策略。支持按状态、标签筛选。\n\n**参数说明**:\n- status: 按状态筛选 (draft/ready/running/stopped)\n- tags: 按标签筛选\n- limit: 返回数量限制，默认50\n- offset: 分页偏移\n\n**权限要求**: 需要 'read' 权限级别\n\n**示例**: 列出所有运行中的策略",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "status": {
+        "type": "string",
+        "enum": ["draft", "ready", "running", "stopped"],
+        "description": "按策略状态筛选"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "按标签筛选（满足任一标签）"
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 50,
+        "description": "返回数量限制"
+      },
+      "offset": {
+        "type": "integer",
+        "minimum": 0,
+        "default": 0,
+        "description": "分页偏移量"
+      }
+    },
+    "additionalProperties": false,
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  },
+  "permissions": {
+    "level": "read",
+    "description": "列出策略需要 read 权限"
+  }
+}

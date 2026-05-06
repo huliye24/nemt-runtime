@@ -1,0 +1,94 @@
+{
+  "$schema": "./schemas/refactor-rules.schema.json",
+  "version": "1.0.0",
+  "description": "代码重构复杂度检测规则配置",
+
+  "rules": {
+    "fileLines": {
+      "warning": 200,
+      "error": 300,
+      "excludePatterns": ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.stories.tsx"],
+      "description": "单文件最大行数限制"
+    },
+
+    "functionLines": {
+      "warning": 50,
+      "error": 80,
+      "excludeNames": ["render", "getDerivedStateFromProps"],
+      "description": "单个函数最大行数限制"
+    },
+
+    "nestingDepth": {
+      "warning": 3,
+      "error": 4,
+      "description": "最大嵌套深度（if/for/while/try/catch）"
+    },
+
+    "maxParams": {
+      "warning": 4,
+      "error": 6,
+      "description": "函数最大参数数量"
+    },
+
+    "componentSize": {
+      "warning": 150,
+      "error": 200,
+      "filePatterns": ["*.tsx"],
+      "description": "React 组件最大行数"
+    },
+
+    "duplicateCode": {
+      "threshold": 6,
+      "minTokens": 20,
+      "description": "重复代码检测（最小行数和 token 数）"
+    },
+
+    "importDepth": {
+      "warning": 4,
+      "error": 6,
+      "description": "模块依赖最大深度"
+    },
+
+    "coupling": {
+      "maxImports": 15,
+      "maxExports": 10,
+      "description": "文件耦合度限制"
+    }
+  },
+
+  "extractOpportunities": {
+    "repeatedPattern": {
+      "minOccurrences": 3,
+      "minLines": 10,
+      "description": "重复模式提取机会"
+    },
+    "largeSwitch": {
+      "minCases": 5,
+      "description": "大 switch 语句建议使用策略模式"
+    },
+    "complexCondition": {
+      "maxConditions": 4,
+      "description": "复杂条件建议提取为函数"
+    }
+  },
+
+  "presets": {
+    "strict": {
+      "fileLines": { "warning": 150, "error": 200 },
+      "functionLines": { "warning": 30, "error": 50 },
+      "nestingDepth": { "warning": 2, "error": 3 }
+    },
+    "moderate": {
+      "fileLines": { "warning": 200, "error": 300 },
+      "functionLines": { "warning": 50, "error": 80 },
+      "nestingDepth": { "warning": 3, "error": 4 }
+    },
+    "relaxed": {
+      "fileLines": { "warning": 300, "error": 500 },
+      "functionLines": { "warning": 80, "error": 120 },
+      "nestingDepth": { "warning": 4, "error": 5 }
+    }
+  },
+
+  "activePreset": "moderate"
+}

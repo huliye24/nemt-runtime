@@ -1,0 +1,20 @@
+{
+  "name": "nemt-get-strategy",
+  "description": "获取单个策略的详细信息，包括代码、配置、运行状态。\n\n**参数说明**:\n- strategy_id: 策略ID，必填\n\n**权限要求**: 需要 'read' 权限级别\n\n**示例**: 获取策略详情",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "strategy_id": {
+        "type": "string",
+        "description": "策略唯一标识符"
+      }
+    },
+    "required": ["strategy_id"],
+    "additionalProperties": false,
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  },
+  "permissions": {
+    "level": "read",
+    "description": "获取策略详情需要 read 权限"
+  }
+}
