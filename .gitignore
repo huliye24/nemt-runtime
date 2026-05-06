@@ -1,4 +1,1 @@
-node_modules
-release/
-dist/
-*.exe__pycache__/
+__pycache__/
